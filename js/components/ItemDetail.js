@@ -17,10 +17,6 @@ const ItemDetail = React.createClass({
       manuallyTimeChangeAmount: '5 min',
     };
   },
-  tick: function() {
-    this.props.updateItemState(this.props.item.name, {progress: this.props.item.progress + 1});
-    //this.setState({progress: this.state.progress + 1});
-  },
   format: function(num) {
     if (num < 10) return '0' + num;
     return num;
@@ -61,15 +57,10 @@ const ItemDetail = React.createClass({
         const {TimerMixin} = this.props;
         const nextIntervalAndIsTiming = {};
         if (!this.props.item.isTiming) {
-          nextIntervalAndIsTiming.interval = TimerMixin.setInterval(this.tick, 1000);
+          this.props.setIntervalHelp(this.props.item.name);
         } else {
-          TimerMixin.clearInterval(this.props.item.interval);
-          nextIntervalAndIsTiming.interval = null;
+          this.props.clearIntervalHelp(this.props.item);
         }
-
-        nextIntervalAndIsTiming.isTiming = !this.props.item.isTiming;
-
-        this.props.updateItemState(this.props.item.name, nextIntervalAndIsTiming);
       }}
       underlayColor='#ffffff00'
       >

@@ -98,7 +98,7 @@ class tenThousandHour extends Component {
     this.state = {
       itemList: [{
         name: 'Sample 1',
-        progress: 3599,
+        progress: 36000,
         interval: null,
         isTiming: false,
       },],
@@ -108,6 +108,8 @@ class tenThousandHour extends Component {
 
     this.updateItemState = this.updateItemState.bind(this);
     this.clearIntervalHelp = this.clearIntervalHelp.bind(this);
+    this.setIntervalHelp = this.setIntervalHelp.bind(this);
+
   }
 
   componentWillUnmount() {
@@ -132,13 +134,30 @@ class tenThousandHour extends Component {
     const targetIndex = itemList.findIndex(e => e.name === name);
 
     const newItemList = itemList.slice(0, targetIndex).concat([Object.assign({}, itemList[targetIndex], keyVals)]).concat(itemList.slice(targetIndex + 1));
-    // console.log(newItemList, keyVals);
+    //console.log(newItemList, keyVals);
     this.setState({itemList: newItemList});
   }
 
   clearIntervalHelp(item) {
     TimerMixin.clearInterval(item.interval);
-    this.updateItemState(item.name, {interval: null});
+
+    this.updateItemState(item.name, {
+      interval: null,
+      isTiming: false,
+    });
+  }
+
+  setIntervalHelp(name) {
+    const newInterval = TimerMixin.setInterval(() => {
+      const {itemList} = this.state;
+      const targetIndex = itemList.findIndex(e => e.name === name);
+      this.updateItemState(name, {progress: itemList[targetIndex].progress + 1});
+    }, 1000);
+
+    this.updateItemState(name, {
+      interval: newInterval,
+      isTiming: true,
+    });
   }
 
   render() {
@@ -171,6 +190,7 @@ class tenThousandHour extends Component {
             ref={c => this.ItemDetail = c}
             item={this.state.itemList.find(i => i.name === route.title)}
             updateItemState={this.updateItemState}
+            setIntervalHelp={this.setIntervalHelp}
             clearIntervalHelp={this.clearIntervalHelp}
             TimerMixin={TimerMixin}
             />

@@ -33,7 +33,12 @@ class ItemEntry extends Component {
       onPress={this.onPress.bind(this, nav, item.name)}
       >
       <View style={styles.wrap}>
+      <View style={styles.container}>
       <Text style={styles.name}>{item.name}</Text>
+      {(item.progress >= 36000) ? (
+        <Text style={[styles.successText]}>🌟</Text>
+      ) : null}
+      </View>
       <Text style={styles.progress}>{item.progress}</Text>
       </View>
       </TouchableHighlight>
@@ -50,10 +55,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  name: {
+  container: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  name: {
     fontSize: 24,
     fontWeight: '200',
+  },
+  successLabel: {
+    borderRadius: 4,
+    borderWidth: 0.5,
+    borderColor: '#d6d7da',
+  },
+  successText: {
+    fontSize: 16,
+    fontWeight: '200',
+    color: 'red',
+    fontWeight: '700',
+    marginHorizontal: 6
   },
   progress: {
     flex: 0,
