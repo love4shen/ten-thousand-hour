@@ -11,19 +11,15 @@ import {
   SegmentedControlIOS,
 } from 'react-native';
 
-import TimerMixin from 'react-timer-mixin';
-
 const ItemDetail = React.createClass({
-  mixins: [TimerMixin],
   getInitialState: function() {
     return {
-      progress: this.props.item.progress,
-      isTiming: false,
       manuallyTimeChangeAmount: '5 min',
     };
   },
   tick: function() {
-    this.setState({progress: this.state.progress + 1});
+    this.props.updateItemState(this.props.item.name, {progress: this.props.item.progress + 1});
+    //this.setState({progress: this.state.progress + 1});
   },
   format: function(num) {
     if (num < 10) return '0' + num;
@@ -42,11 +38,13 @@ const ItemDetail = React.createClass({
       let amount = timeMapping[val];
       if (action.includes('Subtract')) amount *= -1;
 
-      this.setState({progress: this.state.progress + amount});
+      this.props.updateItemState(this.props.item.name, {progress: this.props.item.progress + amount});
+
+      //this.setState({progress: this.state.progress + amount});
     }
   },
   render: function() {
-    let left = this.state.progress;
+    let left = this.props.item.progress;
     const hours = Math.floor(left/3600);
     left %= 3600;
     const minutes = Math.floor(left/60);
@@ -55,52 +53,58 @@ const ItemDetail = React.createClass({
 
     return (
       <View style={styles.scene}>
-        <Text>{this.format(hours)}:{this.format(minutes)}:{this.format(seconds)}</Text>
+      {(this.props.item.progress >= 36000) ? <Text>CONGRATS!</Text> : null}
+      <Text>{this.format(hours)}:{this.format(minutes)}:{this.format(seconds)}</Text>
 
-        <TouchableHighlight
-          onPress={() => {
-            if (!this.state.isTiming) {
-              this.interval = this.setInterval(this.tick, 1000);
-            } else {
-              this.clearInterval(this.interval);
-            }
+      <TouchableHighlight
+      onPress={() => {
+        const {TimerMixin} = this.props;
+        const nextIntervalAndIsTiming = {};
+        if (!this.props.item.isTiming) {
+          nextIntervalAndIsTiming.interval = TimerMixin.setInterval(this.tick, 1000);
+        } else {
+          TimerMixin.clearInterval(this.props.item.interval);
+          nextIntervalAndIsTiming.interval = null;
+        }
 
-            this.setState({isTiming: !this.state.isTiming})
-          }}
-          underlayColor='#ffffff00'
-          >
-          {(() => {
-            if (this.state.isTiming) {
-              return (<Text>Stop</Text>);
-            } else {
-              return (<Text>Start</Text>)
-            }})()}
-          </TouchableHighlight>
-          <SegmentedControlIOS
-            values={['Add Time', 'Subtract Time']}
-            momentary={true}
-            onValueChange={(action) => {
-              this.manullyChangeTime(action, this.state.manuallyTimeChangeAmount);
-            }}
-            />
-          <SegmentedControlIOS
-            values={['5 min', '10 min', '15 min', '30 min', '1 hour']}
-            selectedIndex={0}
-            onValueChange={(val) => {
-              this.setState({manuallyTimeChangeAmount: val})
-            }}
-            />
-      </View>
-    )
-  }
-});
+        nextIntervalAndIsTiming.isTiming = !this.props.item.isTiming;
 
-const styles = StyleSheet.create({
-  scene: {
-    flex: 1,
-    paddingTop: 64,
-    backgroundColor: '#efeff4',
-  },
-})
+        this.props.updateItemState(this.props.item.name, nextIntervalAndIsTiming);
+      }}
+      underlayColor='#ffffff00'
+      >
+      {(() => {
+        if (this.props.item.isTiming) {
+          return (<Text>Stop</Text>);
+        } else {
+          return (<Text>Start</Text>)
+        }})()}
+        </TouchableHighlight>
+        <SegmentedControlIOS
+        values={['Add Time', 'Subtract Time']}
+        momentary={true}
+        onValueChange={(action) => {
+          this.manullyChangeTime(action, this.state.manuallyTimeChangeAmount);
+        }}
+        />
+        <SegmentedControlIOS
+        values={['5 min', '10 min', '15 min', '30 min', '1 hour']}
+        selectedIndex={0}
+        onValueChange={(val) => {
+          this.setState({manuallyTimeChangeAmount: val})
+        }}
+        />
+        </View>
+      )
+    }
+  });
 
-export default ItemDetail;
+  const styles = StyleSheet.create({
+    scene: {
+      flex: 1,
+      paddingTop: 64,
+      backgroundColor: '#efeff4',
+    },
+  })
+
+  export default ItemDetail;

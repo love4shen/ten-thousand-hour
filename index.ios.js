@@ -13,6 +13,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import TimerMixin from 'react-timer-mixin';
+
 import AddItem from './js/components/AddItem';
 import ItemsList from './js/components/ItemsList';
 import ItemDetail from './js/components/ItemDetail';
@@ -25,7 +27,7 @@ class tenThousandHour extends Component {
       Title: (route, navigator, index, navState) => {
         return (
           <Text style={[styles.navBarText, styles.navBarTitleText]}>
-            {route.title}
+          {route.title}
           </Text>
         );
       },
@@ -34,24 +36,24 @@ class tenThousandHour extends Component {
           case 'addItem':
           return (
             <TouchableOpacity
-              onPress={() => navigator.pop()}
-              style={styles.navBarLeftButton}>
-              <Text style={[styles.navBarText, styles.navBarButtonText]}>
-                Cancel
-              </Text>
+            onPress={() => navigator.pop()}
+            style={styles.navBarLeftButton}>
+            <Text style={[styles.navBarText, styles.navBarButtonText]}>
+            Cancel
+            </Text>
             </TouchableOpacity>
           );
           case 'itemDetail':
           return (
             <TouchableOpacity
-              onPress={() => {
-                this.updateProgress(route.title, this.ItemDetail.state.progress);
-                navigator.pop();
-              }}
-              style={styles.navBarLeftButton}>
-              <Text style={[styles.navBarText, styles.navBarButtonText]}>
-                Back
-              </Text>
+            onPress={() => {
+              // this.updateProgress(route.title, this.ItemDetail.state.progress);
+              navigator.pop();
+            }}
+            style={styles.navBarLeftButton}>
+            <Text style={[styles.navBarText, styles.navBarButtonText]}>
+            Back
+            </Text>
             </TouchableOpacity>
           );
           default:
@@ -64,27 +66,27 @@ class tenThousandHour extends Component {
           case 'dashboard':
           return (
             <TouchableOpacity
-              onPress={() => navigator.push({
-                id: 'addItem',
-                title: 'Add New Sth',
-              })}
-              style={styles.navBarRightButton}>
-              <Text style={[styles.navBarText, styles.navBarButtonText]}>
-                Add
-              </Text>
+            onPress={() => navigator.push({
+              id: 'addItem',
+              title: 'Add New Sth',
+            })}
+            style={styles.navBarRightButton}>
+            <Text style={[styles.navBarText, styles.navBarButtonText]}>
+            Add
+            </Text>
             </TouchableOpacity>
           );
           case 'addItem':
           return (
             <TouchableOpacity
-              onPress={() => {
-                this.addItem(this.AddItem.state.text);
-                navigator.pop();
-              }}
-              style={styles.navBarRightButton}>
-              <Text style={[styles.navBarText, styles.navBarButtonText]}>
-                Done
-              </Text>
+            onPress={() => {
+              this.addItem(this.AddItem.state.text);
+              navigator.pop();
+            }}
+            style={styles.navBarRightButton}>
+            <Text style={[styles.navBarText, styles.navBarButtonText]}>
+            Done
+            </Text>
             </TouchableOpacity>
           )
           default:
@@ -97,10 +99,21 @@ class tenThousandHour extends Component {
       itemList: [{
         name: 'Sample 1',
         progress: 3599,
+        interval: null,
+        isTiming: false,
       },],
     }
 
     this.addItem = this.addItem.bind(this);
+
+    this.updateItemState = this.updateItemState.bind(this);
+    this.clearIntervalHelp = this.clearIntervalHelp.bind(this);
+  }
+
+  componentWillUnmount() {
+    this.state.itemList.forEach(item => {
+      clearIntervalHelp(item);
+    });
   }
 
   addItem(name) {
@@ -114,68 +127,76 @@ class tenThousandHour extends Component {
     }
   }
 
-  updateProgress(name, np) {
+  updateItemState(name, keyVals) {
     const {itemList} = this.state;
     const targetIndex = itemList.findIndex(e => e.name === name);
 
-    const newItemList = itemList.slice(0, targetIndex).concat([{name: itemList[targetIndex].name, progress: np}]).concat(itemList.slice(targetIndex + 1));
+    const newItemList = itemList.slice(0, targetIndex).concat([Object.assign({}, itemList[targetIndex], keyVals)]).concat(itemList.slice(targetIndex + 1));
+    // console.log(newItemList, keyVals);
+    this.setState({itemList: newItemList});
+  }
 
-    this.setState({itemList:newItemList});
+  clearIntervalHelp(item) {
+    TimerMixin.clearInterval(item.interval);
+    this.updateItemState(item.name, {interval: null});
   }
 
   render() {
     return (
       <Navigator
-        ref={(nav) => this.navRef = nav}
-        initialRoute={{
-          title: 'AppNameGoesHere',
-          id: 'dashboard'
-        }}
-        renderScene={(route, nav) => {
-          switch (route.id) {
-            case 'dashboard':
-            return (
-              <ItemsList
-                ref={c => this.ItemsList = c}
-                itemList={this.state.itemList}
-                nav={nav}
-                />
-            );
-            case 'addItem':
-            return (
-              <AddItem
-                ref={c => this.AddItem = c}
-                />
-            );
-            case 'itemDetail':
-            return (
-              <ItemDetail
-                ref={c => this.ItemDetail = c}
-                item={this.state.itemList.find(i => i.name === route.title)}
-                />
-            )
-            default:
-            return null;
-          }
-        }
-      }
-
-      configureScene={(route, routeStack) => {
+      ref={(nav) => this.navRef = nav}
+      initialRoute={{
+        title: 'AppNameGoesHere',
+        id: 'dashboard'
+      }}
+      renderScene={(route, nav) => {
         switch (route.id) {
+          case 'dashboard':
+          return (
+            <ItemsList
+            ref={c => this.ItemsList = c}
+            itemList={this.state.itemList}
+            nav={nav}
+            />
+          );
           case 'addItem':
-          return Navigator.SceneConfigs.FloatFromBottom;
+          return (
+            <AddItem
+            ref={c => this.AddItem = c}
+            />
+          );
+          case 'itemDetail':
+          return (
+            <ItemDetail
+            ref={c => this.ItemDetail = c}
+            item={this.state.itemList.find(i => i.name === route.title)}
+            updateItemState={this.updateItemState}
+            clearIntervalHelp={this.clearIntervalHelp}
+            TimerMixin={TimerMixin}
+            />
+          )
           default:
-          return Navigator.SceneConfigs.PushFromRight;
+          return null;
         }
       }
     }
-    navigationBar={
-      <Navigator.NavigationBar
-        routeMapper={this.NavigationBarRouteMapper}
-        style={styles.navBar}
-        />
+
+    configureScene={(route, routeStack) => {
+      switch (route.id) {
+        case 'addItem':
+        return Navigator.SceneConfigs.FloatFromBottom;
+        default:
+        return Navigator.SceneConfigs.PushFromRight;
+      }
     }
+  }
+  navigationBar={
+    <Navigator.NavigationBar
+    routeMapper={this.NavigationBarRouteMapper}
+    style={styles.navBar}
     />
+  }
+  />
 );
 }
 }
