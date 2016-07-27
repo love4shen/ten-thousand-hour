@@ -15,6 +15,14 @@ import NavBarRouteMapperTitle from './NavBarRouteMapperTitle';
 import NavBarRouteMapperLeftButton from './NavBarRouteMapperLeftButton';
 // import NavBarRouteMapperRightButton from './NavBarRouteMapperRightButton';
 
+const updateAddItemRoute = (navigator) => (newProp) => {
+  navigator.replace(Object.assign({
+    id: 'addItem',
+    title: 'Add New Sth',
+    text: '',
+  }, newProp));
+}
+
 class Dashboard extends Component {
   constructor(props) {
     super(props);
@@ -30,6 +38,7 @@ class Dashboard extends Component {
             onPress={() => navigator.push({
               id: 'addItem',
               title: 'Add New Sth',
+              text: '',
             })}
             style={styles.button}>
             <Text style={styles.text}>
@@ -41,7 +50,7 @@ class Dashboard extends Component {
           return (
             <TouchableOpacity
             onPress={() => {
-              this.props.onAddGoalClick(this.AddItem.state.text);
+              this.props.onAddGoalClick(route.text);
               navigator.pop();
             }}
             style={styles.button}>
@@ -77,6 +86,8 @@ class Dashboard extends Component {
           return (
             <AddItem
             ref={c => this.AddItem = c}
+            text={route.text}
+            updateAddItemRoute={updateAddItemRoute(nav)}
             />
           );
           case 'itemDetail':

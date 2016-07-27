@@ -1,7 +1,3 @@
-/**
-* @flow
-*/
-
 import React, { Component } from 'react';
 import {
   StyleSheet,
@@ -11,40 +7,47 @@ import {
   PixelRatio,
 } from 'react-native';
 
-class ItemEntry extends Component {
-  constructor(props) {
-    super(props);
+import Swipeout  from 'react-native-swipeout';
 
-    this.onPress = this.onPress.bind(this);
-  }
+const formatProgressToHour = (num) => {
+  const hours = Math.ceil(num/3600);
+  const rem = num%3600;
 
-  onPress(nav, title) {
-    nav.push({
-      id: 'itemDetail',
-      title,
-    })
-  }
-
-  render() {
-    const {item, nav} = this.props;
-
-    return (
-      <TouchableHighlight
-      onPress={this.onPress.bind(this, nav, item.name)}
-      >
-      <View style={styles.wrap}>
-      <View style={styles.container}>
-      <Text style={styles.name}>{item.name}</Text>
-      {(item.progress >= 36000) ? (
-        <Text style={[styles.successText]}>🌟</Text>
-      ) : null}
-      </View>
-      <Text style={styles.progress}>{item.progress}</Text>
-      </View>
-      </TouchableHighlight>
-    )
-  }
+  return rem < 1800 ? '' + hours : '~' + hours;
 }
+
+const onGoalPress = (nav, title) => {
+  nav.push({
+    id: 'itemDetail',
+    title,
+  });
+};
+
+const swipeBtns = [{
+  text: 'Delete',
+  backgroundColor: 'red',
+  onPress: () => {}
+}];
+
+const ItemEntry = ({item, nav}) => (
+  <Swipeout right={swipeBtns}
+  autoClose='true'
+  backgroundColor= 'transparent'>
+  <TouchableHighlight
+  onPress={() => onGoalPress(nav, item.name)}
+  >
+  <View style={styles.wrap}>
+  <View style={styles.container}>
+  <Text style={styles.name}>{item.name}</Text>
+  {(item.progress >= 36000) ? (
+    <Text style={[styles.successText]}>🌟</Text>
+  ) : null}
+  </View>
+  <Text style={styles.progress}>{formatProgressToHour(item.progress)}</Text>
+  </View>
+  </TouchableHighlight>
+  </Swipeout>
+)
 
 const styles = StyleSheet.create({
   wrap: {

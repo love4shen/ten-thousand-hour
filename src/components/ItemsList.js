@@ -10,7 +10,6 @@ import {
   ListView,
   PixelRatio,
 } from 'react-native';
-
 import ItemEntry from './ItemEntry';
 
 const ItemsList = ({ goals, nav }) => {

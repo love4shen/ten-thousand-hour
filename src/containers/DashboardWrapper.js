@@ -1,6 +1,7 @@
-import { connect } from 'react-redux'
-import { addGoal, updateProgress, setTimer, clearTimer } from '../actions'
-import Dashboard from '../components/Dashboard'
+import { connect } from 'react-redux';
+import { addGoal, updateProgress, setTimer, clearTimer } from '../actions';
+import Dashboard from '../components/Dashboard';
+import { bindActionCreators } from 'redux';
 
 const mapStateToProps = (state) => {
   return {
@@ -10,18 +11,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAddGoalClick: (title) => {
-      dispatch(addGoal(title));
-    },
-    onUpdateProgressClick: (id, updatedProgress) => {
-      dispatch(updateProgress(id, updatedProgress));
-    },
-    setTimerHelp: (id, timer) => {
-      dispatch(setTimer(id, timer));
-    },
-    clearTimerHelp: (id) => {
-      dispatch(clearTimer(id));
-    },
+    onAddGoalClick: bindActionCreators(addGoal, dispatch),
+    onUpdateProgressClick: bindActionCreators(updateProgress, dispatch),
+    setTimerHelp: bindActionCreators(setTimer, dispatch),
+    clearTimerHelp: bindActionCreators(clearTimer, dispatch),
   }
 };
 
