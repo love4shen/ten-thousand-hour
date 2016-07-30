@@ -7,7 +7,7 @@ import {
   PixelRatio,
 } from 'react-native';
 
-import Swipeout  from 'react-native-swipeout';
+// import Swipeout  from 'react-native-swipeout';
 
 const formatProgressToHour = (num) => {
   const hours = Math.ceil(num/3600);
@@ -30,9 +30,9 @@ const swipeBtns = [{
 }];
 
 const ItemEntry = ({item, nav}) => (
-  <Swipeout right={swipeBtns}
-  autoClose='true'
-  backgroundColor= 'transparent'>
+  // <Swipeout right={swipeBtns}
+  // autoClose='true'
+  // backgroundColor= 'transparent'>
   <TouchableHighlight
   onPress={() => onGoalPress(nav, item.name)}
   >
@@ -46,7 +46,7 @@ const ItemEntry = ({item, nav}) => (
   <Text style={styles.progress}>{formatProgressToHour(item.progress)}</Text>
   </View>
   </TouchableHighlight>
-  </Swipeout>
+  // </Swipeout>
 )
 
 const styles = StyleSheet.create({
