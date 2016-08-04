@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 const mapStateToProps = (state) => {
   return {
     goals: state.goals,
+    appInfo: state.appInfo,
   }
 };
 

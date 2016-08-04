@@ -23,79 +23,70 @@ const updateAddItemRoute = (navigator) => (newProp) => {
   }, newProp));
 }
 
-class Dashboard extends Component {
-  constructor(props) {
-    super(props);
+const NavigationBarRouteMapper = (props) => ({
+  Title: NavBarRouteMapperTitle,
+  LeftButton: NavBarRouteMapperLeftButton,
+  RightButton: (r, n, i, ns) => NavBarRouteMapperRightButton(r, n, i, ns, props),
+});
 
-    this.NavigationBarRouteMapper = {
-      Title: NavBarRouteMapperTitle,
-      LeftButton: NavBarRouteMapperLeftButton,
-      RightButton: (r, n, i, ns) => NavBarRouteMapperRightButton(r, n, i, ns, props),
-    }
-  }
-
-  render() {
-    return (
-      <Navigator
-      initialRoute={{
-        title: 'AppNameGoesHere',
-        id: 'dashboard'
-      }}
-      renderScene={(route, nav) => {
-        switch (route.id) {
-          case 'dashboard':
-          return (
-            <ItemsList
-            goals={this.props.goals}
-            nav={nav}
-            />
-          );
-          case 'addItem':
-          return (
-            <AddItem
-            ref={c => this.AddItem = c}
-            text={route.text}
-            updateAddItemRoute={updateAddItemRoute(nav)}
-            />
-          );
-          case 'itemDetail':
-          return (
-            <ItemDetail
-            ref={c => this.ItemDetail = c}
-            nav={nav}
-            goal={this.props.goals.find(i => i.name === route.title)}
-            onUpdateProgressClick={this.props.onUpdateProgressClick}
-            onDeleteGoalClick={this.props.onDeleteGoalClick}
-            onCloseBannerClick={this.props.onCloseBannerClick}
-            setTimerHelp={this.props.setTimerHelp}
-            clearTimerHelp={this.props.clearTimerHelp}
-            goals={this.props.goals}
-            />
-          )
-          default:
-          return null;
-        }
-      }}
-
-      configureScene={(route, routeStack) => {
-        switch (route.id) {
-          case 'addItem':
-          return Navigator.SceneConfigs.FloatFromBottom;
-          default:
-          return Navigator.SceneConfigs.PushFromRight;
-        }
-      }}
-
-      navigationBar={
-        <Navigator.NavigationBar
-        routeMapper={this.NavigationBarRouteMapper}
-        style={styles.navBar}
+const Dashboard = (props) => (
+  <Navigator
+  initialRoute={{
+    title: props.appInfo.appName,
+    id: 'dashboard',
+  }}
+  renderScene={(route, nav) => {
+    switch (route.id) {
+      case 'dashboard':
+      return (
+        <ItemsList
+        goals={props.goals}
+        nav={nav}
         />
-      }
-      />
-    );
+      );
+      case 'addItem':
+      return (
+        <AddItem
+        ref={c => this.AddItem = c}
+        text={route.text}
+        updateAddItemRoute={updateAddItemRoute(nav)}
+        />
+      );
+      case 'itemDetail':
+      return (
+        <ItemDetail
+        nav={nav}
+        goal={props.goals.find(i => i.name === route.title)}
+        onUpdateProgressClick={props.onUpdateProgressClick}
+        onDeleteGoalClick={props.onDeleteGoalClick}
+        onCloseBannerClick={props.onCloseBannerClick}
+        setTimerHelp={props.setTimerHelp}
+        clearTimerHelp={props.clearTimerHelp}
+        goals={props.goals}
+        />
+      )
+      default:
+      return null;
+    }
+  }}
+
+  configureScene={(route, routeStack) => {
+    switch (route.id) {
+      case 'addItem':
+      return Navigator.SceneConfigs.FloatFromBottom;
+      default:
+      return Navigator.SceneConfigs.PushFromRight;
+    }
+  }}
+
+  navigationBar={
+    <Navigator.NavigationBar
+    routeMapper={NavigationBarRouteMapper(props)}
+    style={styles.navBar}
+    />
   }
-}
+  />
+)
 
 const styles = StyleSheet.create({
   navBar: {
