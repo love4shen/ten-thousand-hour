@@ -7,19 +7,27 @@ import {
   PixelRatio,
 } from 'react-native';
 
+import TextField from 'react-native-md-textinput';
+
 const AddItem = ({ text, updateAddItemRoute }) => (
   <View style={styles.scene}>
-  <Text style={styles.inputLabel}>
-  Name
-  </Text>
+  <View style={styles.wrapper}>
   <TextInput
-  style={styles.inputBox}
+  style={[styles.label, styles.inputGroupMember]}
+  value={'Name'}
+  editable = {false}
+  />
+  <TextInput
+  style={[styles.input, styles.inputGroupMember]}
   onChangeText={(text) => updateAddItemRoute({text})}
   value={text}
   autoFocus={true}
   placeholder={'Enter Task Name'}
   returnKeyType={'done'}
+  editable = {true}
+  maxLength = {40}
   />
+  </View>
   </View>
 )
 
@@ -28,14 +36,22 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 64,
     borderBottomWidth: 1 / PixelRatio.get(),
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#f9f9f9',
   },
-  inputLabel: {
-    color: '#373e4d',
-    fontWeight: '500',
+  wrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  inputBox: {
+  inputGroupMember: {
     height: 40,
+    backgroundColor: '#fff',
+  },
+  label: {
+    flex: 1,
+    paddingLeft: 10,
+  },
+  input: {
+    flex: 3,
   },
 });
 

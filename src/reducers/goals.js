@@ -16,13 +16,26 @@ const goals = (state = [], action) => {
       progress: 0,
       interval: undefined,
       isTiming: false,
+      shouldShowBanner: true,
     }];
+
+    case 'DELETE_GOAL':
+
+    return state.filter(g => g.id !== action.id);
 
     case 'UPDATE_PROGRESS':
     stateCopy = state.slice();
 
     targetIndex = state.findIndex(goal => goal.id === action.id);
     stateCopy[targetIndex].progress = action.updatedProgress >= 0 ? action.updatedProgress : 0;
+
+    return stateCopy;
+
+    case 'CLOSE_BANNER':
+    stateCopy = state.slice();
+
+    targetIndex = state.findIndex(goal => goal.id === action.id);
+    stateCopy[targetIndex].shouldShowBanner = false;
 
     return stateCopy;
 

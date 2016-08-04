@@ -6,10 +6,20 @@ export const addGoal = (title) => ({
   title,
 });
 
+export const deleteGoal = (id) => ({
+  type: 'DELETE_GOAL',
+  id,
+});
+
 export const updateProgress = (id, updatedProgress) => ({
   type: 'UPDATE_PROGRESS',
   id,
   updatedProgress,
+});
+
+export const closeBanner = (id) => ({
+  type: 'CLOSE_BANNER',
+  id,
 });
 
 export const setTimer = (id, timer) => ({
@@ -21,4 +31,4 @@ export const setTimer = (id, timer) => ({
 export const clearTimer = (id) => ({
   type: 'CLEAR_TIMER',
   id,
-})
+});

@@ -13,7 +13,7 @@ import ItemsList from './ItemsList';
 import ItemDetail from './ItemDetail';
 import NavBarRouteMapperTitle from './NavBarRouteMapperTitle';
 import NavBarRouteMapperLeftButton from './NavBarRouteMapperLeftButton';
-// import NavBarRouteMapperRightButton from './NavBarRouteMapperRightButton';
+import NavBarRouteMapperRightButton from './NavBarRouteMapperRightButton';
 
 const updateAddItemRoute = (navigator) => (newProp) => {
   navigator.replace(Object.assign({
@@ -30,39 +30,7 @@ class Dashboard extends Component {
     this.NavigationBarRouteMapper = {
       Title: NavBarRouteMapperTitle,
       LeftButton: NavBarRouteMapperLeftButton,
-      RightButton: (route, navigator, index, navState) => {
-        switch (route.id) {
-          case 'dashboard':
-          return (
-            <TouchableOpacity
-            onPress={() => navigator.push({
-              id: 'addItem',
-              title: 'Add New Sth',
-              text: '',
-            })}
-            style={styles.button}>
-            <Text style={styles.text}>
-            Add
-            </Text>
-            </TouchableOpacity>
-          );
-          case 'addItem':
-          return (
-            <TouchableOpacity
-            onPress={() => {
-              this.props.onAddGoalClick(route.text);
-              navigator.pop();
-            }}
-            style={styles.button}>
-            <Text style={styles.text}>
-            Done
-            </Text>
-            </TouchableOpacity>
-          )
-          default:
-          return null;
-        }
-      }
+      RightButton: (r, n, i, ns) => NavBarRouteMapperRightButton(r, n, i, ns, props),
     }
   }
 
@@ -94,8 +62,11 @@ class Dashboard extends Component {
           return (
             <ItemDetail
             ref={c => this.ItemDetail = c}
+            nav={nav}
             goal={this.props.goals.find(i => i.name === route.title)}
             onUpdateProgressClick={this.props.onUpdateProgressClick}
+            onDeleteGoalClick={this.props.onDeleteGoalClick}
+            onCloseBannerClick={this.props.onCloseBannerClick}
             setTimerHelp={this.props.setTimerHelp}
             clearTimerHelp={this.props.clearTimerHelp}
             goals={this.props.goals}

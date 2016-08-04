@@ -10,6 +10,7 @@
   "dependencies": {
     "react": "15.2.1",
     "react-native": "0.29.0",
+    "react-native-md-textinput": "^2.0.4",
     "react-native-swipeout": "^2.0.12",
     "react-redux": "^4.4.5",
     "react-timer-mixin": "^0.13.3",

@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const NavBarRouteMapperRightButton = (onAddGoalClick, title) => (route, navigator, index, navState) => {
+const NavBarRouteMapperRightButton = (route, navigator, index, navState, props) => {
   switch (route.id) {
     case 'dashboard':
     return (
@@ -13,6 +13,7 @@ const NavBarRouteMapperRightButton = (onAddGoalClick, title) => (route, navigato
       onPress={() => navigator.push({
         id: 'addItem',
         title: 'Add New Sth',
+        text: '',
       })}
       style={styles.button}>
       <Text style={styles.text}>
@@ -24,7 +25,7 @@ const NavBarRouteMapperRightButton = (onAddGoalClick, title) => (route, navigato
     return (
       <TouchableOpacity
       onPress={() => {
-        onAddGoalClick(title);
+        props.onAddGoalClick(route.text);
         navigator.pop();
       }}
       style={styles.button}>
