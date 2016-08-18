@@ -53,10 +53,12 @@ const Dashboard = (props) => (
         />
       );
       case 'itemDetail':
+      console.log('after update ' + props.goals[route.itemId].progress);
+      console.log('=========');
       return (
         <ItemDetail
         nav={nav}
-        goal={props.goals.find(i => i.name === route.title)}
+        goal={props.goals[route.itemId]}
         onUpdateProgressClick={props.onUpdateProgressClick}
         onDeleteGoalClick={props.onDeleteGoalClick}
         onCloseBannerClick={props.onCloseBannerClick}

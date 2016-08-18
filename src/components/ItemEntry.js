@@ -16,10 +16,10 @@ const formatProgressToHour = (num) => {
   return rem < 1800 ? '' + hours : '~' + hours;
 }
 
-const onGoalPress = (nav, title) => {
+const onGoalPress = (nav, itemId) => {
   nav.push({
     id: 'itemDetail',
-    title,
+    itemId,
   });
 };
 
@@ -34,7 +34,7 @@ const ItemEntry = ({item, nav}) => (
   // autoClose='true'
   // backgroundColor= 'transparent'>
   <TouchableHighlight
-  onPress={() => onGoalPress(nav, item.name)}
+  onPress={() => onGoalPress(nav, item.id)}
   >
   <View style={styles.wrap}>
   <View style={styles.container}>

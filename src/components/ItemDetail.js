@@ -22,7 +22,7 @@ class ItemDetail extends Component {
     }
   }
 
-  manullyChangeTime(action, val) {
+  manullyChangeTime(id, progress, action, val) {
     const timeMapping = {
       '5 min': 5*60,
       '10 min': 10*60,
@@ -35,8 +35,12 @@ class ItemDetail extends Component {
       let amount = timeMapping[val];
       if (action.includes('Subtract')) amount *= -1;
 
-      this.props.onUpdateProgressClick(this.props.goal.id, this.props.goal.progress + amount);
+      this.props.onUpdateProgressClick(id, progress + amount);
     }
+  }
+
+  autoChangeTime(id) {
+    this.props.onUpdateProgressClick(id, this.props.goal.progress + 1);
   }
 
   render() {
@@ -74,7 +78,7 @@ class ItemDetail extends Component {
       onPress={() => {
         if (!goal.interval) {
           setTimerHelp(goal.id, TimerMixin.setInterval(() => {
-            onUpdateProgressClick(goal.id, goals.find(g => g.id === goal.id).progress + 1);
+            this.autoChangeTime(goal.id);
           }, 1000));
         } else {
           clearTimerHelp(goal.id);
@@ -90,7 +94,7 @@ class ItemDetail extends Component {
       values={['Add Time', 'Subtract Time']}
       momentary={true}
       onValueChange={(action) => {
-        this.manullyChangeTime(action, this.state.timeCtrlValue);
+        this.manullyChangeTime(goal.id, goal.progress, action, this.state.timeCtrlValue);
       }}
       />
       <SegmentedControlIOS
