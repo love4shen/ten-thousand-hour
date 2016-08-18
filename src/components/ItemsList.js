@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import ItemEntry from './ItemEntry';
 
-const ItemsList = ({ goals, nav }) => {
+const ItemsList = ({ goals, ...rest }) => {
   const dataSource = new ListView
   .DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
   .cloneWithRows(goals);
@@ -25,7 +25,7 @@ const ItemsList = ({ goals, nav }) => {
     renderRow={item => (
       <ItemEntry
       item={item}
-      nav={nav}
+      {...rest}
       />
     )}
     />

@@ -29,6 +29,21 @@ const NavBarRouteMapperLeftButton = (route, navigator, index, navState) => {
       </Text>
       </TouchableOpacity>
     );
+    case 'dashboard':
+    return (
+      <TouchableOpacity
+      onPress={() => {
+        navigator.push({
+          id: 'settings',
+          title: 'Settings',
+        });
+      }}
+      style={styles.button}>
+      <Text style={styles.text}>
+      Settings
+      </Text>
+      </TouchableOpacity>
+    );
     default:
     return null;
   }

@@ -12,6 +12,10 @@ import TimerMixin from 'react-timer-mixin';
 
 const format = (num) => (num < 10) ? '0' + num : num;
 
+const formatTime = (hours, minutes, seconds) => {
+  return `${format(hours)}:${format(minutes)}:${format(seconds)}`;
+}
+
 class ItemDetail extends Component {
   constructor(props) {
     super(props);
@@ -40,7 +44,8 @@ class ItemDetail extends Component {
   }
 
   autoChangeTime(id) {
-    this.props.onUpdateProgressClick(id, this.props.goal.progress + 1);
+    const { goal, onUpdateProgressClick } = this.props;
+    onUpdateProgressClick(id, goal.progress + 1);
   }
 
   render() {
@@ -51,13 +56,13 @@ class ItemDetail extends Component {
     left %= 60;
     const seconds = left;
 
-    const { goal, setTimerHelp, clearTimerHelp, onUpdateProgressClick, goals } = this.props;
+    const { goal, setTimerHelp, clearTimerHelp, onUpdateProgressClick, targetHour } = this.props;
 
     return (
       <View style={styles.scene}>
       <View style={styles.wrapper}>
 
-      {(goal.progress >= 36000 && goal.shouldShowBanner) ?
+      {(goal.progress >= targetHour && goal.shouldShowBanner) ?
         (<View style={styles.banner}>
           <Text style={styles.congrats}>CONGRAGULATIONS!</Text>
           <Text style={styles.congrats}>You've spent over 10,000 hours on this goal!</Text>
@@ -71,7 +76,7 @@ class ItemDetail extends Component {
           </View>
         </View>) :
         null}
-      <Text style={styles.progress}>{format(hours)}:{format(minutes)}:{format(seconds)}</Text>
+      <Text style={styles.progress}>{formatTime(hours, minutes, seconds)}</Text>
 
       <View style={[styles.btn, styles.timing]}>
       <TouchableHighlight
@@ -142,6 +147,7 @@ const styles = StyleSheet.create({
     fontWeight: '200',
     paddingHorizontal: 10,
     paddingVertical: 10,
+    fontFamily: 'Menlo',
   },
   segctrl: {
     alignSelf: 'stretch',

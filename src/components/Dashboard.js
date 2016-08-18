@@ -14,6 +14,7 @@ import ItemDetail from './ItemDetail';
 import NavBarRouteMapperTitle from './NavBarRouteMapperTitle';
 import NavBarRouteMapperLeftButton from './NavBarRouteMapperLeftButton';
 import NavBarRouteMapperRightButton from './NavBarRouteMapperRightButton';
+import Settings from './Settings';
 
 const updateAddItemRoute = (navigator) => (newProp) => {
   navigator.replace(Object.assign({
@@ -23,16 +24,22 @@ const updateAddItemRoute = (navigator) => (newProp) => {
   }, newProp));
 }
 
-const NavigationBarRouteMapper = (props) => ({
+const NavigationBarRouteMapper = (onAddGoalClick) => ({
   Title: NavBarRouteMapperTitle,
   LeftButton: NavBarRouteMapperLeftButton,
-  RightButton: (r, n, i, ns) => NavBarRouteMapperRightButton(r, n, i, ns, props),
+  RightButton: (r, n, i, ns) => NavBarRouteMapperRightButton(r, n, i, ns, onAddGoalClick),
 });
 
-const Dashboard = (props) => (
+const Dashboard = ({
+  goals,
+  appInfo,
+  settings,
+  onAddGoalClick,
+  ...rest
+  }) => (
   <Navigator
   initialRoute={{
-    title: props.appInfo.appName,
+    title: appInfo.appName,
     id: 'dashboard',
   }}
   renderScene={(route, nav) => {
@@ -40,8 +47,9 @@ const Dashboard = (props) => (
       case 'dashboard':
       return (
         <ItemsList
-        goals={props.goals}
+        goals={goals}
         nav={nav}
+        targetHour={settings.targetHour}
         />
       );
       case 'addItem':
@@ -53,18 +61,19 @@ const Dashboard = (props) => (
         />
       );
       case 'itemDetail':
-      console.log('after update ' + props.goals[route.itemId].progress);
-      console.log('=========');
       return (
         <ItemDetail
         nav={nav}
-        goal={props.goals[route.itemId]}
-        onUpdateProgressClick={props.onUpdateProgressClick}
-        onDeleteGoalClick={props.onDeleteGoalClick}
-        onCloseBannerClick={props.onCloseBannerClick}
-        setTimerHelp={props.setTimerHelp}
-        clearTimerHelp={props.clearTimerHelp}
-        goals={props.goals}
+        goal={goals[route.itemId]}
+        targetHour={settings.targetHour}
+        {...rest}
+        />
+      );
+      case 'settings':
+      return (
+        <Settings
+        settings={settings}
+        appInfo={appInfo}
         />
       )
       default:
@@ -75,6 +84,7 @@ const Dashboard = (props) => (
   configureScene={(route, routeStack) => {
     switch (route.id) {
       case 'addItem':
+      case 'settings':
       return Navigator.SceneConfigs.FloatFromBottom;
       default:
       return Navigator.SceneConfigs.PushFromRight;
@@ -83,7 +93,7 @@ const Dashboard = (props) => (
 
   navigationBar={
     <Navigator.NavigationBar
-    routeMapper={NavigationBarRouteMapper(props)}
+    routeMapper={NavigationBarRouteMapper(onAddGoalClick)}
     style={styles.navBar}
     />
   }
@@ -92,7 +102,7 @@ const Dashboard = (props) => (
 
 const styles = StyleSheet.create({
   navBar: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f5f5f7',
     borderBottomWidth: 1 / PixelRatio.get(),
     borderBottomColor: '#cdcdcd',
   },

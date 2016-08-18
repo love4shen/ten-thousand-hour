@@ -29,7 +29,7 @@ const swipeBtns = [{
   onPress: () => {}
 }];
 
-const ItemEntry = ({item, nav}) => (
+const ItemEntry = ({ item, nav, targetHour }) => (
   // <Swipeout right={swipeBtns}
   // autoClose='true'
   // backgroundColor= 'transparent'>
@@ -39,7 +39,7 @@ const ItemEntry = ({item, nav}) => (
   <View style={styles.wrap}>
   <View style={styles.container}>
   <Text style={styles.name}>{item.name}</Text>
-  {(item.progress >= 36000) ? (
+  {(item.progress >= targetHour) ? (
     <Text style={[styles.successText]}>🌟</Text>
   ) : null}
   </View>
